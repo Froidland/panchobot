@@ -1,4 +1,4 @@
-import { ContextMenuCommand } from "../../interfaces/index.js";
+import { ContextMenuCommand } from "@/interfaces/contextMenuCommand.js";
 import {
 	ContextMenuCommandBuilder,
 	EmbedBuilder,
@@ -6,11 +6,12 @@ import {
 	InteractionContextType,
 	MessageContextMenuCommandInteraction,
 } from "discord.js";
-import { db } from "../../db/index.js";
-import { logger } from "../../utils/index.js";
-import { users } from "../../db/schema.js";
+import { db } from "@/db/index.js";
+import { logger } from "@/utils/logger.js";
+import { users } from "@/db/schema.js";
 import { eq } from "drizzle-orm";
-import { discordClient } from "../../main.js";
+import { discordClient } from "@/discordClient.js";
+import { emojiRegex } from "@/utils/regex.js";
 
 export const addEmojiPersonal: ContextMenuCommand = {
 	data: new ContextMenuCommandBuilder()
@@ -47,10 +48,10 @@ export const addEmojiPersonal: ContextMenuCommand = {
 		}
 
 		const user = await db.query.users.findFirst({
-			where: eq(users.discord_id, interaction.user.id),
+			where: eq(users.discordId, interaction.user.id),
 		});
 
-		if (!user || !user.personal_server_id) {
+		if (!user || !user.personalServerId) {
 			logger.error({
 				type: "context-menu-command",
 				commandName: interaction.commandName,
@@ -74,8 +75,8 @@ export const addEmojiPersonal: ContextMenuCommand = {
 		}
 
 		const userGuild =
-			discordClient.guilds.cache.get(user.personal_server_id) ||
-			(await discordClient.guilds.fetch(user.personal_server_id));
+			discordClient.guilds.cache.get(user.personalServerId) ||
+			(await discordClient.guilds.fetch(user.personalServerId));
 
 		if (!userGuild) {
 			await interaction.editReply({
@@ -98,7 +99,7 @@ export const addEmojiPersonal: ContextMenuCommand = {
 				commandName: interaction.commandName,
 				userId: interaction.user.id,
 				guildId: interaction.guild.id,
-				message: `failed to add emoji to personal server ${user.personal_server_id}: user is not the owner of the personal server`,
+				message: `failed to add emoji to personal server ${user.personalServerId}: user is not the owner of the personal server`,
 			});
 
 			await interaction.editReply({
@@ -115,10 +116,9 @@ export const addEmojiPersonal: ContextMenuCommand = {
 			return;
 		}
 
-		const emojiRegex = /<?(a)?:?(\w{2,32}):(\d{17,19})>?/; // Example: <:pepega:123456789012345678>
-		const match = interaction.targetMessage.content.match(emojiRegex);
+		const emojiMatch = emojiRegex.exec(interaction.targetMessage.content);
 
-		if (!match) {
+		if (!emojiMatch) {
 			await interaction.editReply({
 				embeds: [
 					new EmbedBuilder()
@@ -131,7 +131,7 @@ export const addEmojiPersonal: ContextMenuCommand = {
 			return;
 		}
 
-		const [, animated, name, id] = match;
+		const [, animated, name, id] = emojiMatch;
 		const url = `https://cdn.discordapp.com/emojis/${id}.${
 			animated ? "gif" : "png"
 		}`;
@@ -165,7 +165,7 @@ export const addEmojiPersonal: ContextMenuCommand = {
 				commandName: interaction.commandName,
 				userId: interaction.user.id,
 				guildId: interaction.guild.id,
-				message: `failed to add emoji to personal server ${user.personal_server_id}: ${error}`,
+				message: `failed to add emoji to personal server ${user.personalServerId}: ${error}`,
 			});
 
 			await interaction.editReply({

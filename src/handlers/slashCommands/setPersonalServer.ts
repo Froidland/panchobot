@@ -3,10 +3,10 @@ import {
 	InteractionContextType,
 	SlashCommandBuilder,
 } from "discord.js";
-import { SlashCommand } from "../../interfaces/index.js";
-import { db } from "../../db/index.js";
-import { logger } from "../../utils/index.js";
-import { users } from "../../db/schema.js";
+import { SlashCommand } from "@/interfaces/slashCommand.js";
+import { db } from "@/db/index.js";
+import { logger } from "@/utils/logger.js";
+import { users } from "@/db/schema.js";
 
 export const setPersonalServer: SlashCommand = {
 	data: new SlashCommandBuilder()
@@ -57,13 +57,13 @@ export const setPersonalServer: SlashCommand = {
 			await db
 				.insert(users)
 				.values({
-					discord_id: interaction.user.id,
-					personal_server_id: interaction.guild.id,
+					discordId: interaction.user.id,
+					personalServerId: interaction.guild.id,
 				})
 				.onConflictDoUpdate({
-					target: [users.discord_id],
+					target: [users.discordId],
 					set: {
-						personal_server_id: interaction.guild.id,
+						personalServerId: interaction.guild.id,
 					},
 				});
 		} catch (error) {

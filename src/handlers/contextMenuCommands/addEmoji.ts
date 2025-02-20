@@ -1,4 +1,4 @@
-import { ContextMenuCommand } from "../../interfaces/index.js";
+import { ContextMenuCommand } from "@/interfaces/contextMenuCommand.js";
 import {
 	ContextMenuCommandBuilder,
 	EmbedBuilder,
@@ -7,7 +7,8 @@ import {
 	MessageContextMenuCommandInteraction,
 	PermissionFlagsBits,
 } from "discord.js";
-import { logger } from "../../utils/index.js";
+import { logger } from "@/utils/logger.js";
+import { emojiRegex } from "@/utils/regex.js";
 
 export const addEmoji: ContextMenuCommand = {
 	data: new ContextMenuCommandBuilder()
@@ -44,10 +45,9 @@ export const addEmoji: ContextMenuCommand = {
 			return;
 		}
 
-		const emojiRegex = /<?(a)?:?(\w{2,32}):(\d{17,19})>?/; // Example: <:pepega:123456789012345678>
-		const match = interaction.targetMessage.content.match(emojiRegex);
+		const emojiMatch = emojiRegex.exec(interaction.targetMessage.content);
 
-		if (!match) {
+		if (!emojiMatch) {
 			await interaction.editReply({
 				embeds: [
 					new EmbedBuilder()
@@ -60,7 +60,7 @@ export const addEmoji: ContextMenuCommand = {
 			return;
 		}
 
-		const [, animated, name, id] = match;
+		const [, animated, name, id] = emojiMatch;
 		const url = `https://cdn.discordapp.com/emojis/${id}.${
 			animated ? "gif" : "png"
 		}`;

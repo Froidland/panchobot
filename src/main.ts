@@ -1,14 +1,10 @@
-import { ActivityType, Client, Events, GatewayIntentBits } from "discord.js";
+import { ActivityType, Events } from "discord.js";
 import { logger } from "./utils/logger.js";
-import { onInteraction, onMessageCreate, onReady } from "./events/index.js";
-
-export const discordClient = new Client({
-	intents: [
-		GatewayIntentBits.Guilds,
-		GatewayIntentBits.GuildMessages,
-		GatewayIntentBits.MessageContent,
-	],
-});
+import { onInteraction } from "@/events/onInteraction.js";
+import { onMessageCreate } from "@/events/onMessageCreate.js";
+import { onReady } from "@/events/onReady.js";
+import { discordClient } from "@/discordClient.js";
+import "@/db/index.js";
 
 discordClient.once(Events.ClientReady, async (client) => {
 	logger.info({

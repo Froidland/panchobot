@@ -10,9 +10,9 @@ import {
 	type Collection,
 	InteractionContextType,
 } from "discord.js";
-import { SlashCommand } from "../../interfaces/index.js";
-import { logger } from "../../utils/index.js";
-import { ConfirmationComponent } from "../../components/index.js";
+import { SlashCommand } from "@/interfaces/slashCommand.js";
+import { logger } from "@/utils/logger.js";
+import { createConfirmationComponent } from "@/components/confirmationComponent.js";
 
 export const deleteCategory: SlashCommand = {
 	data: new SlashCommandBuilder()
@@ -50,7 +50,7 @@ export const deleteCategory: SlashCommand = {
 						"Are you sure you want to delete this category and all its channels?",
 					),
 			],
-			components: [ConfirmationComponent],
+			components: [createConfirmationComponent()],
 		});
 
 		let buttonInteraction: ButtonInteraction;

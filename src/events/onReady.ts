@@ -1,6 +1,7 @@
 import { Client, REST, Routes } from "discord.js";
-import { slashCommandList, contextMenuCommandList } from "../handlers/index.js";
-import { logger } from "../utils/index.js";
+import { logger } from "@/utils/logger.js";
+import { slashCommandList } from "@/handlers/slashCommands/index.js";
+import { contextMenuCommandList } from "@/handlers/contextMenuCommands/index.js";
 
 export const onReady = async (client: Client) => {
 	if (!client.user) {

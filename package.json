@@ -9,10 +9,9 @@
 		"node": "^22.0.0"
 	},
 	"scripts": {
-		"start": "node --import=tsimp/import --env-file .env src/main.ts",
-		"start:noenv": "node --import=tsimp/import src/main.ts",
-		"dev": "cross-env NODE_ENV=development nodemon -e ts,json --import=tsimp/import --env-file .env src/main.ts",
-		"commands:unregister": "node --import=tsimp/import --env-file .env scripts/unregisterGlobalCommands.js",
+		"start": "bun ./src/main.ts",
+		"dev": "cross-env NODE_ENV=development bun --watch ./src/main.ts",
+		"commands:unregister": "bun ./scripts/unregisterGlobalCommands.js",
 		"lint": "eslint .  --ext .ts",
 		"lint:fix": "eslint .  --ext .ts --fix",
 		"db:push": "drizzle-kit push",
@@ -23,30 +22,27 @@
 	"author": "Francisco Hauva <phauva@gmail.com>",
 	"license": "MIT",
 	"dependencies": {
-		"@axiomhq/winston": "1.3.0",
+		"@axiomhq/winston": "1.3.1",
 		"@paralleldrive/cuid2": "^2.2.2",
-		"discord.js": "^14.16.3",
-		"dotenv": "^16.4.5",
-		"drizzle-orm": "^0.36.4",
+		"discord.js": "^14.18.0",
+		"drizzle-orm": "^0.39.3",
 		"postgres": "^3.4.5",
-		"typescript": "^5.7.2",
+		"typescript": "^5.7.3",
 		"winston": "^3.17.0"
 	},
 	"devDependencies": {
-		"@eslint/js": "^9.15.0",
-		"@types/node": "^22.9.3",
-		"@typescript-eslint/eslint-plugin": "^8.15.0",
+		"@eslint/js": "^9.20.0",
+		"@types/node": "^22.13.4",
+		"@typescript-eslint/eslint-plugin": "^8.24.1",
 		"cross-env": "^7.0.3",
-		"drizzle-kit": "^0.28.1",
-		"eslint": "^9.15.0",
+		"drizzle-kit": "^0.30.4",
+		"eslint": "^9.20.1",
 		"eslint-plugin-import": "^2.31.0",
-		"eslint-plugin-n": "^17.14.0",
-		"eslint-plugin-promise": "^7.1.0",
-		"globals": "^15.12.0",
-		"nodemon": "^3.1.7",
-		"prettier": "^3.3.3",
-		"tsimp": "^2.0.12",
-		"typescript-eslint": "^8.15.0"
+		"eslint-plugin-n": "^17.15.1",
+		"eslint-plugin-promise": "^7.2.1",
+		"globals": "^16.0.0",
+		"prettier": "^3.5.1",
+		"typescript-eslint": "^8.24.1"
 	},
 	"prettier": {
 		"useTabs": true
@@ -74,5 +70,10 @@
 	},
 	"trustedDependencies": [
 		"es5-ext"
-	]
+	],
+	"pnpm": {
+		"onlyBuiltDependencies": [
+			"esbuild"
+		]
+	}
 }

@@ -11,9 +11,9 @@ import {
 	PermissionFlagsBits,
 	SlashCommandBuilder,
 } from "discord.js";
-import { SlashCommand } from "../../interfaces/index.js";
-import { logger } from "../../utils/index.js";
-import { ConfirmationComponent } from "../../components/index.js";
+import { SlashCommand } from "@/interfaces/slashCommand.js";
+import { logger } from "@/utils/logger.js";
+import { createConfirmationComponent } from "@/components/confirmationComponent.js";
 
 export const archiveCategory: SlashCommand = {
 	data: new SlashCommandBuilder()
@@ -82,7 +82,7 @@ export const archiveCategory: SlashCommand = {
 						"Are you sure you want to archive this category and all its channels?",
 					),
 			],
-			components: [ConfirmationComponent],
+			components: [createConfirmationComponent()],
 		});
 
 		let buttonInteraction: ButtonInteraction;

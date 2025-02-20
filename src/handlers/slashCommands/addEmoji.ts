@@ -6,8 +6,9 @@ import {
 	PermissionFlagsBits,
 	SlashCommandBuilder,
 } from "discord.js";
-import { SlashCommand } from "../../interfaces/index.js";
-import { logger } from "../../utils/index.js";
+import { SlashCommand } from "@/interfaces/slashCommand.js";
+import { logger } from "@/utils/logger.js";
+import { emojiRegex } from "@/utils/regex.js";
 
 export const addEmoji: SlashCommand = {
 	data: new SlashCommandBuilder()
@@ -47,17 +48,11 @@ export const addEmoji: SlashCommand = {
 		}
 
 		const emoji = interaction.options.getString("emoji", true);
-
 		const emojiName = interaction.options.getString("name", false);
 
-		// Regex for matching custom discord emoji
-		// First capture group is for animated emojis (whether it has an "a" in front of it or not)
-		// Second capture group is for the emoji name (2-32 characters long)
-		// Third capture group is for the emoji id (17-19 characters long)
-		const emojiRegex = /<?(a)?:?(\w{2,32}):(\d{17,19})>?/;
-		const match = emoji.match(emojiRegex);
+		const emojiMatch = emojiRegex.exec(emoji);
 
-		if (!match) {
+		if (!emojiMatch) {
 			logger.error({
 				type: "slash-command",
 				commandName: interaction.commandName,
@@ -78,7 +73,7 @@ export const addEmoji: SlashCommand = {
 			return;
 		}
 
-		const [, animated, name, id] = match;
+		const [, animated, name, id] = emojiMatch;
 		const url = `https://cdn.discordapp.com/emojis/${id}.${
 			animated ? "gif" : "png"
 		}`;

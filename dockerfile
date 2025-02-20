@@ -1,15 +1,14 @@
-FROM node:22-alpine
+FROM oven/bun:1.2.2-alpine
 
-WORKDIR /home/node/panchobot
+WORKDIR /home/app/panchobot
 
 COPY package.json .
-
 COPY pnpm-lock.yaml .
 
-RUN npm install -g pnpm
+RUN bun install -g pnpm
 
 RUN pnpm install --frozen-lockfile
 
 COPY . .
 
-CMD ["npm", "run", "start:noenv"]
+CMD ["pnpm", "start"]
